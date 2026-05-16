@@ -1,0 +1,440 @@
+{
+  "name": "rss抓取信息发送邮件",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://36kr.com/feed",
+        "options": {
+          "customFields": "内容"
+        }
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -672,
+        16
+      ],
+      "id": "3dd1732c-b190-44f7-b436-eaf04b895a11",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.contentSnippet }}",
+        "options": {
+          "systemMessage": "# Role\n你是一位拥有 10 年以上经验的资深科技行业分析师。你具备敏锐的商业嗅觉和技术洞察力，擅长从海量的科技资讯、新品发布和行业动态中，迅速提炼出核心商业价值和技术影响，并剔除无用的公关废话。\n\n# Task\n你将收到一条科技新闻的【标题】和【内容/摘要】。请执行以下两项任务：\n1. 用精准、客观、不带废话的语言，将核心信息总结为不多不少刚好 3 句话。\n2. 评估该新闻对科技行业的“影响力与重要性”，给出 1-10 的评分（10分为行业地震级别的颠覆性事件，5分为常规更新，1分为毫无价值的水稿）。\n\n# Output Format\n你必须严格且仅输出合法的 JSON 格式。不要包含任何 Markdown 标记（如 ```json ），不要输出任何其他解释性文字，确保 n8n 可以直接解析。\n\nJSON 结构必须严格如下：\n{\n  \"summary\": \"这里填入你的3句话总结\",\n  \"score\": 这里填入1到10的整数数字,\n  \"reason\": \"这里用1句话简短解释你给出这个分数的理由\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "2f767774-3187-4f38-907b-cd92dbbaccd2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "=qwen-turbo",
+          "mode": "id"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        144
+      ],
+      "id": "7b745283-1b81-4325-a6ce-dd0e8c0b9121",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4gWbMIRWx89I6YL3",
+          "name": "OpenAi account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://sspai.com/feed",
+        "options": {
+          "ignoreSSL": true
+        }
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -672,
+        -176
+      ],
+      "id": "2dee7592-d73a-4e42-a0aa-358619dca918",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "73f6b43e-7c0e-4559-99cd-643562d9c285",
+              "name": "contentSnippet",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        -176
+      ],
+      "id": "6ac9ed28-7bf7-45dd-a186-e3fa0b9a69f7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "343db8f0-9dbb-4a51-93cd-f2b36f6ce1cc",
+              "name": "contentSnippet",
+              "value": "={{ $json.contentSnippet }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        16
+      ],
+      "id": "5c50452f-8fa7-4ff9-9965-7580f39c4e2d",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -224,
+        -80
+      ],
+      "id": "a7d904b0-19c5-46f8-9156-62856c446267",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "94eb878c-1657-43e2-a880-96b1bd665a11"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        -80
+      ],
+      "id": "772bcc9a-c513-44d3-9eac-b437abbbae0d",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = [];\n\nfor (const item of $input.all()) {\n  try {\n    // 自动寻找 AI 的输出文本 (兼容 OpenAI 和常见大模型节点的默认字段)\n    let aiString = item.json.message?.content || item.json.text || item.json.output || \"\";\n    \n    // 强制转换为字符串并清理 Markdown 符号和两端空格\n    aiString = String(aiString).replace(/```json/g, '').replace(/```/g, '').trim();\n\n    // 解析你那段带有 \\n 的 JSON 数据\n    let aiData = JSON.parse(aiString);\n\n    // 重新拼装出干净的数据字典\n    newItems.push({\n      json: {\n        title: item.json.title || \"未知标题\",\n        link: item.json.link || \"\",\n        summary: aiData.summary,\n        score: Number(aiData.score),\n        reason: aiData.reason\n      }\n    });\n  } catch (error) {\n    // 遇到不规范的乱码数据，直接给 0 分并标记，防止工作流中断\n    newItems.push({\n      json: {\n        title: item.json.title || \"【数据异常】\",\n        link: item.json.link || \"\",\n        summary: \"AI 节点返回的数据格式错误，无法解析。\",\n        score: 0, \n        reason: \"解析失败\",\n        error_info: error.message\n      }\n    });\n  }\n}\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -80
+      ],
+      "id": "270b2f55-87e5-4fb4-8bf7-280e2f71d0f7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f874dfb2-0413-49f4-823b-a939001aed0c",
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 6,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        800,
+        -80
+      ],
+      "id": "4ff110b3-df9f-41fe-87c7-0fc58dea6c17",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -896,
+        -80
+      ],
+      "id": "39388738-f58a-459b-99d8-2b106cf18f14",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "2516181455@qq.com",
+        "toEmail": "2516181455@qq.com",
+        "subject": "数据分数大于6",
+        "emailFormat": "text",
+        "text": "={{ $json.summary }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1024,
+        -176
+      ],
+      "id": "c673fccd-9f05-4e5e-91a9-8aeda8b49841",
+      "name": "Send an Email",
+      "webhookId": "61445a14-d6b3-41ec-a1e5-626fe7fdbf0a",
+      "credentials": {
+        "smtp": {
+          "id": "BOnjOgoMqFtUYhBZ",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "2516181455@qq.com",
+        "toEmail": "2516181455@qq.com",
+        "subject": "数据抓取小于6",
+        "emailFormat": "text",
+        "text": "={{ $json.summary }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1024,
+        16
+      ],
+      "id": "ce37e733-8d7b-486b-b2be-5cf04dd23d5e",
+      "name": "Send an Email1",
+      "webhookId": "e77b2431-f816-4367-b615-de25846995c2",
+      "credentials": {
+        "smtp": {
+          "id": "BOnjOgoMqFtUYhBZ",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9bfd98fe-af64-4837-81c6-e9a065422c2c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7fe004713c080f1de0665d2f16fc6c614a787f370a80b03b86f52f962699ea80"
+  },
+  "id": "PkYLAtdSnK24ldrr",
+  "tags": []
+}
