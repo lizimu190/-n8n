@@ -55,12 +55,12 @@ Email Send： 通过 SMTP 协议发送邮件。
 3. 配置凭据 （Credentials）
 导入后，你需要重新配置节点中的敏感凭证：
 
-OpenAI Chat Model 节点： 创建或选择你的 凭证（填入你的 API Key 和 Base URL）。OpenAi API
+OpenAI Chat Model 节点： 创建或选择你的 凭证（填入你的 API Key 和 Base URL）。
 
-Send an Email 节点： 创建或选择你的 凭证（填入 SMTP 服务器地址、端口、发件邮箱及密码/授权码）。SMTP account
+Send an Email 节点： 创建或选择你的 凭证（填入 SMTP 服务器地址、端口、发件邮箱及密码/授权码）。
 
 4. 个性化修改 （必看）
-修改收发件邮箱：默认节点中硬编码了邮箱 ，请务必在两个 Send an Email 节点中将其修改为你自己的邮箱地址。2516181455@qq.com
+修改收发件邮箱：默认节点中硬编码了邮箱 ，请务必在两个 Send an Email 节点中将其修改为你自己的邮箱地址。
 
 修改 RSS 源：你可以直接在 RSS Read 节点中替换 URL（例如加入极客公园、虎嗅等的 Feed 链接）。
 
